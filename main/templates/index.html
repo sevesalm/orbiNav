@@ -24,7 +24,9 @@
 			<button id="gen_btn" type="button" class="btn btn-primary btn-lg center-block has-spinner" onclick="generate()"> Generate new</button> 
 		</div>
 	</div>
-	<script type="text/javascript">
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
 
 	var points = [];
 	var start = [];
@@ -215,6 +217,5 @@
 		var line = new THREE.Line(geometry, material);
 		scene.add(line);
 	}
-
-	</script>
+</script>
 {% endblock %}
