@@ -4,7 +4,7 @@
 	<div id="renderer" class="text-center"></div>
 
 	<div class="row">
-		<div class="col-sm-8 col-sm-offset-2 well" style="padding: 0px 10px 5px 10px;">
+		<div class="col-sm-8 col-sm-offset-2 well" id="infopanel" style="padding: 0px 10px 5px 10px;">
 			<div class="row">
 				<div class="col-sm-3">
 					<div class="radio">
@@ -99,7 +99,7 @@
 	}
 
 	function get_viewport_height() {
-		return window.innerHeight-300;
+		return window.innerHeight-$('#infopanel').height()-100;
 	}
 
 	function render() {
@@ -135,6 +135,7 @@
 
 			update_solution();
 			update_info();
+			set_viewport_size();
 			update_renderer();
 			$('#gen_btn').text("Generate new");
 		});
