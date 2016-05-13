@@ -63,10 +63,6 @@ class Point:
 				return True
 			return False
 
-	# For debugging
-	# def __str__(self):
-	# 	return(str(self.x) + "," + str(self.y) + "," + str(self.z))
-
 # Node class for priority queue
 class Node:
 	def __init__(self, index, distance):
@@ -99,24 +95,13 @@ class Solver:
 	# Pre-calc distance matrix for all nodes - using symmetry optimization
 	def calc_dist(self):
 		self.dist_matrix = [None] * (self.count*self.count)
-		self.graph = []
 		for i in range(self.count):
-			row = [0] * self.count
 			for j in range(i+1, self.count):
 				p1 = self.points[i]
 				p2 = self.points[j]
 				if p1.can_see(p2):
 					dist = p1.distance_to(p2)
 					self.dist_matrix[i*self.count + j] = self.dist_matrix[i + j*self.count] = dist
-					row[j] = 1
-			self.graph.append(row)
-
-		# for i in range(self.count):
-		# 	print(i, end=": ")
-		# 	for j in range(self.count):
-		# 		print('%.2E' % self.dist_matrix[i*self.count + j], end=" ")
-		# 	print("")
-
 
 	# Using Dijkstra algorithm for finding the shortest route
 	# Uses simple priority queue for storing unvisited nodes
@@ -155,21 +140,35 @@ class Solver:
 							item.priority = new_dist
 							break
 
+		# Build graph (ie. matrix with node links) 
+		graph = []
+		for i in range(self.count):
+			row = [0] * self.count
+			for j in range(i+1, self.count):
+				p1 = self.points[i]
+				p2 = self.points[j]
+				if p1.can_see(p2):
+					row[j] = 1
+			graph.append(row)
+
 		# Traverse solution reversed, start from destination node (i=1)
-		i = 1
 		solution = []
 		distance = 0.0
-		while prev[i]:
-			solution.insert(0, prev[i]-2)
-			distance += self.dist_matrix[i*self.count + prev[i]]
-			i = prev[i]
+		hops = 0
+		if(prev[1]):
+			i = 1
+			while prev[i] != None:
+				if(prev[i] > 0):
+					solution.insert(0, prev[i]-2)
+				distance += self.dist_matrix[i*self.count + prev[i]]
+				row = min(i, prev[i])
+				col = max(i, prev[i])
+				graph[row][col] = 2
+				i = prev[i]
 
-		if len(solution):
 			hops = len(solution)+1
-		else:
-			hops = 0
 
-		return {'solution': solution, 'distance': distance, 'hops': hops}
+		return {'solution': solution, 'distance': distance, 'hops': hops, 'graph': graph}
 
 def index(request):
 	return render(request, 'index.html', {})
@@ -177,8 +176,8 @@ def index(request):
 @csrf_exempt
 def generate(request):
 	solver = Solver("data.txt")
-	resultA = solver.solve(True)
-	resultB = solver.solve(False)
+	result_euc = solver.solve(True)
+	result_hops = solver.solve(False)
 	points = []
 
 	for item in solver.points:
@@ -187,9 +186,8 @@ def generate(request):
 
 	result = {}
 	result["seed"] = str(solver.seed)
-	result["euc"] = resultA
-	result["hops"] = resultB
+	result["euc"] = result_euc
+	result["hops"] = result_hops
 	result["points"] = points
-	result["graph"] = solver.graph
 	return JsonResponse(result)
 

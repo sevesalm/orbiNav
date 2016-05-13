@@ -35,7 +35,7 @@
 	var solution_hops = []
 	var solution = [];
 	var graph = [];
-	var scene;
+	var scene = new THREE.Scene();
 
 	var red = new THREE.MeshBasicMaterial( {color: 0xee4422});
 	var blue = new THREE.MeshBasicMaterial( {color: 0x5533dd, wireframe: true});
@@ -43,14 +43,8 @@
 	var white = new THREE.MeshBasicMaterial( {color: 0xffffff});
 	var lineMat = new THREE.LineBasicMaterial({color: 0xffffff, linewidth: 2})
 	var lineMat2 = new THREE.LineBasicMaterial({color: 0xbb7766, linewidth: 1, opacity: 0.7, transparent: true})
-	var renderer;
-
-	if ( webglAvailable() ) { 
-		renderer = new THREE.WebGLRenderer({antialias: true}); 
-	} 
-	else { 
-		renderer = new THREE.CanvasRenderer({antialias: true}); 
-	}
+	var renderer = new THREE.WebGLRenderer({antialias: true}); 
+	var mousedown = false;
 	
 	var WIDTH = get_viewport_width(), HEIGHT=get_viewport_height();
 	var VIEW_ANGLE = 43, ASPECT = WIDTH/HEIGHT, NEAR = 100, FAR = 100000000;
@@ -61,25 +55,27 @@
 	renderer.setSize(WIDTH, HEIGHT);
 	$('#renderer').append(renderer.domElement);
 
+	renderer.domElement.addEventListener('mousedown', onDocumentMouseDown, false);
+	renderer.domElement.addEventListener('mouseup', onDocumentMouseUp, false);
+
 	var controls = new THREE.OrbitControls(camera, renderer.domElement);
 	controls.enableZoom = false;
 	controls.enablePan = false;
+	controls.autoRotate = true;
+	controls.autoRotateSpeed = 3.0;
 	controls.addEventListener('change', render);
 
 	generate();
 
 	window.addEventListener( 'resize', onWindowResize, false );
 
+	function onDocumentMouseDown(ev) {
+		mousedown = true;
+	}
 
-	function webglAvailable() { 
-		try { 
-			var canvas = document.createElement( 'canvas' ); 
-			return !!( window.WebGLRenderingContext && ( canvas.getContext( 'webgl' ) || canvas.getContext( 'experimental-webgl' ) ) );
-		} 
-		catch ( e ) { 
-			return false; 
-		} 
-	} 
+	function onDocumentMouseUp(ev) {
+		mousedown = false;
+	}
 
 	function onWindowResize(){
 		set_viewport_size();
@@ -106,6 +102,18 @@
 		renderer.render(scene, camera);
 	};
 
+	setInterval(function() {
+		controls.update();
+		render();
+	}, 50);
+/*
+	(function animate() {
+	    requestAnimationFrame( animate );
+			controls.update();
+
+	    render();
+	})();*/
+
 	$('input:radio').change(function(){
 	        update_solution();  
 	        update_info();
@@ -131,7 +139,6 @@
 			points = $.makeArray(data.points);
 			start = points[0];
 			end = points[1];
-			graph = $.makeArray(data.graph);
 
 			update_solution();
 			update_info();
@@ -159,7 +166,6 @@
 			$('#dist').empty()
 		}
 	}
-
 	function update_renderer() {
 		scene = new THREE.Scene();
 		//scene.fog = new THREE.Fog(0x000000, 20000000, 30000000);
@@ -182,24 +188,17 @@
 		translate_to(node, end);
 		scene.add(node);
 
-
-		if(solution.hops > 0) {
-			connect(start, points[solution.solution[0]+2], lineMat);
-			$.each(solution.solution, function(idx, val) {
-				if(idx > 0)
-					connect(points[val+2], points[solution.solution[idx-1]+2], lineMat);
-			})
-			connect(end, points[solution.solution[solution.solution.length-1]+2], lineMat);
-		}
-
-		$.each(graph, function(row, row_data) {
+		// Draw line segments. Solution with different color
+		$.each(solution.graph, function(row, row_data) {
 			$.each(row_data, function(col, val) {
 				if(val == 1) {
-					connect(points[row], points[col], lineMat2)
+					connect(points[row], points[col], lineMat2);
+				}
+				else if(val==2) {
+					connect(points[row], points[col], lineMat);
 				}
 			})
 		})
-
 		renderer.render(scene, camera);
 	}
 
