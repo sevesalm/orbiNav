@@ -88,11 +88,11 @@ function set_viewport_size() {
 }
 
 function get_viewport_width() {
-	return window.innerWidth*0.9;
+	return $(window).width()*0.9;
 }
 
 function get_viewport_height() {
-	return window.innerHeight-$('#infopanel').height()-100;
+	return $(window).height()-$('#infopanel').height()-80;
 }
 
 function render() {
