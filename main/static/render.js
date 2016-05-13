@@ -32,6 +32,7 @@ renderer.domElement.addEventListener('mouseleave', onDocumentMouseLeave, false);
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableZoom = true;
 controls.enablePan = false;
+controls.rotateSpeed = 0.1;
 controls.autoRotate = true;
 controls.minDistance = 10000000;
 controls.maxDistance = 30000000;
