@@ -14,6 +14,7 @@ var green = new THREE.MeshBasicMaterial( {color: 0x22cc11});
 var white = new THREE.MeshBasicMaterial( {color: 0xffffff});
 var lineMat = new THREE.LineBasicMaterial({color: 0xffffff, linewidth: 2})
 var lineMat2 = new THREE.LineBasicMaterial({color: 0xbb7766, linewidth: 1, opacity: 0.7, transparent: true})
+
 var renderer = new THREE.WebGLRenderer({antialias: true}); 
 
 var WIDTH = get_viewport_width(), HEIGHT=get_viewport_height();
@@ -29,9 +30,14 @@ renderer.domElement.addEventListener('mouseover', onDocumentMouseOver, false);
 renderer.domElement.addEventListener('mouseleave', onDocumentMouseLeave, false);
 
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
-controls.enableZoom = false;
+controls.enableZoom = true;
 controls.enablePan = false;
 controls.autoRotate = true;
+controls.minDistance = 10000000;
+controls.maxDistance = 30000000;
+controls.enableDamping = true;
+controls.dampingFactor = 0.1;
+controls.autoRotateSpeed = 0.5;
 controls.addEventListener('change', render);
 
 generate();
@@ -39,7 +45,7 @@ generate();
 $.notifyDefaults({
 	delay: 2000,
 	animate: {
-		enter: 'animated fadeIn',
+		enter: 'animated FailedIn',
 		exit: 'animated slideOutRight',
 	}
 });
@@ -47,12 +53,24 @@ $.notifyDefaults({
 window.addEventListener( 'resize', onWindowResize, false );
 window.addEventListener( 'orientationchange', onWindowResize, false );
 
+setInterval(function() {
+	controls.update();
+	render();
+}, 25);
+
+$('input:radio').change(function(){
+        update_solution();  
+        update_info();
+        update_renderer();
+    }
+);  
+
 function onDocumentMouseOver(ev) {
-	controls.autoRotateSpeed = 0.5;
+	controls.autoRotateSpeed = 0.1;
 }
 
 function onDocumentMouseLeave(ev) {
-	controls.autoRotateSpeed = 3.0;
+	controls.autoRotateSpeed = 0.5;
 }
 
 function onWindowResize(){
@@ -80,18 +98,7 @@ function render() {
 	renderer.render(scene, camera);
 };
 
-setInterval(function() {
-	controls.update();
-	render();
-}, 50);
-
-$('input:radio').change(function(){
-        update_solution();  
-        update_info();
-        update_renderer();
-    }
-);  
-
+// Update the pointer to the selected solution
 function update_solution() {
 	if($('input[name=optradio]:checked').attr('id') == "radio_euc") {
 		solution = solution_euc;
@@ -101,6 +108,8 @@ function update_solution() {
 	}
 }
 
+// AJAX request for server to get a solution for a new problem.
+// Displays alert if AJAX fails.
 function generate() {
 	$('#gen_btn').html('<i class="fa fa-refresh fa-spin fa-1x fa-fw margin-bottom"></i> Generating...');
 	$.get("/generate/", function(data) {
@@ -115,9 +124,6 @@ function generate() {
 		update_info();
 		set_viewport_size();
 		update_renderer();
-		$.notify(
-			{message: 'Data loaded succesfully!'}, 
-			{type: 'success'});
 		$('#gen_btn').text("Generate new");
 	}).fail(function() {
 		$.notify(
@@ -145,6 +151,8 @@ function update_info() {
 		$('#dist').empty()
 	}
 }
+
+// Creates a new scene object and populates it 
 function update_renderer() {
 	scene = new THREE.Scene();
 	//scene.fog = new THREE.Fog(0x000000, 20000000, 30000000);
