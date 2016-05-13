@@ -38,7 +38,7 @@ controls.minDistance = 10000000;
 controls.maxDistance = 30000000;
 controls.enableDamping = true;
 controls.dampingFactor = 0.1;
-controls.autoRotateSpeed = 0.5;
+controls.autoRotateSpeed = 0.1;
 controls.addEventListener('change', render);
 
 generate();
@@ -67,11 +67,11 @@ $('input:radio').change(function(){
 );  
 
 function onDocumentMouseOver(ev) {
-	controls.autoRotateSpeed = 0.1;
+	controls.autoRotateSpeed = 0.0;
 }
 
 function onDocumentMouseLeave(ev) {
-	controls.autoRotateSpeed = 0.5;
+	controls.autoRotateSpeed = 0.1;
 }
 
 function onWindowResize(){
