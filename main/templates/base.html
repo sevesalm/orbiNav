@@ -11,6 +11,7 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css">
 		<link href='https://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" type="text/css" href="{% static 'animate.min.css' %}">
 		<link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
 	</head>
 	<body>
@@ -21,7 +22,8 @@
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r76/three.min.js"></script>
 	<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
-
+	<script type="text/javascript" src="{% static 'bootstrap-notify.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'notify-defaults.js' %}"></script>
 	{% include 'navbar.html' %}
 	<div class="container-fluid">
 	    {% block container %}
