@@ -17,6 +17,7 @@ body {
 #infopanel {
 	margin-bottom: 0px;
 	padding: 5px 15px 5px 15px;
+	overflow: hidden;
 }
 
 #info_icon:hover {
