@@ -27,15 +27,13 @@ var FAR = 40000000;
 var camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
 camera.position.z = -20000000;
 
-renderer.setSize(WIDTH, HEIGHT, true);
+set_viewport_size();
 $('#renderer').append(renderer.domElement);
 
 var earth = new THREE.Mesh(new THREE.SphereGeometry(6371000, 32, 32), blue);
 scene.add(earth);
 
-renderer.domElement.addEventListener('mouseover', onDocumentMouseOver, false);
-renderer.domElement.addEventListener('mouseleave', onDocumentMouseLeave, false);
-
+// Settings for mouse controls
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableZoom = true;
 controls.enablePan = false;
@@ -48,6 +46,7 @@ controls.dampingFactor = 0.1;
 controls.autoRotateSpeed = 0.1;
 controls.addEventListener('change', render);
 
+// Initial query
 generate();
 
 $.notifyDefaults({
@@ -58,10 +57,13 @@ $.notifyDefaults({
     }
 });
 
+renderer.domElement.addEventListener('mouseover', onDocumentMouseOver, false);
+renderer.domElement.addEventListener('mouseleave', onDocumentMouseLeave, false);
+
 window.addEventListener('resize', onWindowResize, false);
 window.addEventListener('orientationchange', onWindowResize, false);
 
-// Animation
+// Animation loop
 setInterval(function() {
     controls.update();
     render();
@@ -86,6 +88,7 @@ function onWindowResize() {
     render();
 }
 
+// Delay added to handle slower/buggy machines/browsers
 function set_viewport_size() {
     setInterval(function() {
         var width = get_viewport_width();
@@ -93,15 +96,15 @@ function set_viewport_size() {
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
         renderer.setSize(width, height, true);
-    }, 200);
+    }, 100);
 }
 
 function get_viewport_width() {
-    return $(window).innerWidth() - 100;
+    return $(window).innerWidth()*0.90;
 }
 
 function get_viewport_height() {
-    return $(window).innerHeight() - $('#infopanel').height() - 75;
+    return $(window).innerHeight() - $('#infopanel').outerHeight() - $(".navbar").outerHeight()-8;
 }
 
 function render() {
@@ -139,6 +142,7 @@ function generate() {
     });
 }
 
+// Updates textual info
 function update_info() {
     var result = [];
 
@@ -158,6 +162,7 @@ function update_info() {
     }
 }
 
+// Prevents some nasty memory leaks...
 function clear_scene() {
     while(objects.length) {
         var object = objects.pop();
@@ -173,10 +178,10 @@ function update_renderer() {
     $.each(points, function(idx, val) {
         var color = red;
         if(idx === 0) {
-            color = green;
+            color = green;      // Start node
         }
         else if(idx === 1) {
-            color === white;
+            color === white;    // End node
         }
         var node = new THREE.Mesh(new THREE.SphereGeometry(100000, 12, 12), color);
         objects.push(node);
