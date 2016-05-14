@@ -24,3 +24,7 @@ body {
 	transition: transform 0.3s;
 	transform: scale(1.4);
 }
+
+#info_icon {
+	text-shadow: 3px 3px 8px #aaa; 
+}

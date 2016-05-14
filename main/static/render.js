@@ -1,11 +1,10 @@
 "use strict";
 
 var objects = [];
-var points = [];
-var solution_euc = [];
-var solution_hops = [];
-var solution = [];
-var graph = [];
+var points;
+var solution_euc;
+var solution_hops;
+var solution;
 var scene = new THREE.Scene();
 
 var red = new THREE.MeshBasicMaterial({color: 0xee4422});
@@ -17,12 +16,8 @@ var lineMat2 = new THREE.LineBasicMaterial({color: 0xbb7766, linewidth: 1, opaci
 
 var renderer = new THREE.WebGLRenderer({antialias: true});
 
-var width = get_viewport_width();
-var height = get_viewport_height();
-var aspect = width / height;
-var view_angle = get_camera_fov(aspect);
-
-var camera = new THREE.PerspectiveCamera(view_angle, aspect, 1000000, 40000000);
+// Pass dummy values for fov and aspect ratio. Will be updated in set_viewport_size()
+var camera = new THREE.PerspectiveCamera(1, 1, 1000000, 40000000);
 camera.position.z = -20000000;
 
 set_viewport_size();
@@ -72,7 +67,6 @@ $('input:radio').change(function() {
         update_info();
         update_renderer();
 });
-
 
 function onDocumentMouseOver(ev) {
     controls.autoRotateSpeed = 0.0;
@@ -189,13 +183,13 @@ function update_renderer() {
         else if(idx === 1) {
             color = white;    // End node
         }
-        var node = new THREE.Mesh(new THREE.SphereGeometry(100000, 12, 12), color);
+        var node = new THREE.Mesh(new THREE.SphereGeometry(100000, 8, 8), color);
         objects.push(node);
         translate_to(node, val);
         scene.add(node);
     });
 
-    // Draw line segments. Solution with different color
+    // Draw line segments. Solution segments with different color
     $.each(solution.graph, function(row, row_data) {
         $.each(row_data, function(col, val) {
             if(val === 1) {
