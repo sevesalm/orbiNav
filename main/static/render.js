@@ -90,13 +90,11 @@ function onWindowResize() {
 
 // Delay added to handle slower/buggy machines/browsers
 function set_viewport_size() {
-    setInterval(function() {
-        var width = get_viewport_width();
-        var height = get_viewport_height();
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-        renderer.setSize(width, height, true);
-    }, 100);
+    var width = get_viewport_width();
+    var height = get_viewport_height();
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height, true);
 }
 
 function get_viewport_width() {
@@ -104,7 +102,7 @@ function get_viewport_width() {
 }
 
 function get_viewport_height() {
-    return $(window).innerHeight() - $('#infopanel').outerHeight() - $(".navbar").outerHeight()-8;
+    return $(window).innerHeight() - $('#infopanel').outerHeight() - $(".navbar-header").outerHeight()-7;
 }
 
 function render() {
