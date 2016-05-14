@@ -158,9 +158,15 @@ function update_info() {
     }
 }
 
+function clear_scene() {
+    while(scene.children.length) {
+        scene.remove(scene.children[scene.children.length-1]);
+    }
+}
+
 // Creates a new scene object and populates it
 function update_renderer() {
-    scene = new THREE.Scene();
+    clear_scene();
     //scene.fog = new THREE.Fog(0x000000, 20000000, 30000000);
     var earth = new THREE.Mesh(new THREE.SphereGeometry(6371000, 32, 32), blue);
     scene.add(earth);
