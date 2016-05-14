@@ -1,8 +1,7 @@
 "use strict";
 
+var objects = [];
 var points = [];
-var start = [];
-var end = [];
 var solution_euc = [];
 var solution_hops = [];
 var solution = [];
@@ -30,6 +29,9 @@ camera.position.z = -20000000;
 
 renderer.setSize(WIDTH, HEIGHT, true);
 $('#renderer').append(renderer.domElement);
+
+var earth = new THREE.Mesh(new THREE.SphereGeometry(6371000, 32, 32), blue);
+scene.add(earth);
 
 renderer.domElement.addEventListener('mouseover', onDocumentMouseOver, false);
 renderer.domElement.addEventListener('mouseleave', onDocumentMouseLeave, false);
@@ -125,8 +127,6 @@ function generate() {
         solution_euc = data.euc;
         solution_hops = data.hops;
         points = $.makeArray(data.points);
-        start = points[0];
-        end = points[1];
 
         update_solution();
         update_info();
@@ -159,34 +159,28 @@ function update_info() {
 }
 
 function clear_scene() {
-    while(scene.children.length) {
-        scene.remove(scene.children[scene.children.length-1]);
+    while(objects.length) {
+        scene.remove(objects.pop());
     }
 }
 
 // Creates a new scene object and populates it
 function update_renderer() {
     clear_scene();
-    //scene.fog = new THREE.Fog(0x000000, 20000000, 30000000);
-    var earth = new THREE.Mesh(new THREE.SphereGeometry(6371000, 32, 32), blue);
-    scene.add(earth);
 
     $.each(points, function(idx, val) {
-        if(idx < 2) {
-            return true;
+        var color = red;
+        if(idx === 0) {
+            color = green;
         }
-        var node = new THREE.Mesh(new THREE.SphereGeometry(100000, 12, 12), red);
+        else if(idx === 1) {
+            color === white;
+        }
+        var node = new THREE.Mesh(new THREE.SphereGeometry(100000, 12, 12), color);
+        objects.push(node);
         translate_to(node, val);
         scene.add(node);
     });
-
-    var node = new THREE.Mesh(new THREE.SphereGeometry(100000, 12, 12), green);
-    translate_to(node, start);
-    scene.add(node);
-
-    var node = new THREE.Mesh(new THREE.SphereGeometry(100000, 12, 12), white);
-    translate_to(node, end);
-    scene.add(node);
 
     // Draw line segments. Solution with different color
     $.each(solution.graph, function(row, row_data) {
@@ -215,5 +209,6 @@ function connect(start, end, material) {
         new THREE.Vector3(end[0], end[1], end[2])
     );
     var line = new THREE.Line(geometry, material);
+    objects.push(line);
     scene.add(line);
 }
