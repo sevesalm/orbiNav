@@ -160,7 +160,9 @@ function update_info() {
 
 function clear_scene() {
     while(objects.length) {
-        scene.remove(objects.pop());
+        var object = objects.pop();
+        object.geometry.dispose();
+        scene.remove(object);
     }
 }
 
