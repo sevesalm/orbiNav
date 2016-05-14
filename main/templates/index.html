@@ -1,12 +1,25 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% block container %}
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="myModalLabel">Info</h4>
+				</div>
+				<div class="modal-body">
+					<p>This is a sample solution to <a href="https://reaktor.com/orbital-challenge/">Reaktor Orbital Challenge</a>.</p>
+					<p>Use mouse (or finger on mobile) to control the camera. Drag aroun to rotate around the scene. Zoom in or out using the mouse wheel - or pinch on mobile. Move mouse outside the canvas to begin animation. Load a new problem and a the solution by pressing "Generate". You can switch between solutions by clicking the radio buttons.</p>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div id="renderer" class="text-center"></div>
 
 	<div class="row">
 		<div class="col-sm-8 col-sm-offset-2 well" id="infopanel">
 			<div class="row">
-				<div class="col-sm-3">
+				<div class="col-sm-3 col-xs-10">
 					<div class="radio">
 					  <label><input type="radio" id="radio_euc" name="optradio" checked>Minimize distance</label>
 					</div>
@@ -14,7 +27,11 @@
 					  <label><input type="radio" id="radio_hops" name="optradio">Minimize hops</label>
 					</div>
 				</div>
-				<div class="col-sm-9">
+				<div class="col-sm-1 col-sm-push-8 col-xs-2">
+					<span id="info_icon" class="pull-right fa fa-info-circle fa-2x" data-toggle="modal" data-target="#myModal" aria-hidden="true"></span>
+				</div>
+
+				<div class="col-sm-8 col-sm-pull-1 col-xs-12">
 					<span id="seed"></span><br>
 					<span id="solution"></span><br>
 					<span id="hops"></span><span id="dist"></span><br>
