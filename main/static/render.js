@@ -102,7 +102,7 @@ function get_viewport_width() {
 }
 
 function get_viewport_height() {
-    return $(window).innerHeight() - $('#infopanel').outerHeight() - $(".navbar-header").outerHeight()-7;
+    return $(window).innerHeight() - $('#infopanel').outerHeight() - $(".navbar-header").outerHeight()-10;
 }
 
 // Make sure the scene is always visible (with default zoom)
