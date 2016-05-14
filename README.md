@@ -3,7 +3,7 @@
 
 [Reaktor](https://reaktor.com) heitti kuumottavan haasteen [Reaktor Orbital Challenge](https://reaktor.com/orbital-challenge/), jossa annetaan CSV-muotoinen [data](https://space-fast-track.herokuapp.com/generate) maapalloa kiertävistä satelliiteista, sekä lähtö- ja päätepiste maan pinnalla. Näiden perusteella on löydettävä esteetön reitti lähtöpisteestä päätepisteeseen satelliittien kautta. En lannistunut lähes mahdottoman edessä, vaan päätin ratkaista tämänkin ongelman. Lopputuloksena syntyi orbiNav:
 
-[Demo](https://orbinav.herokuapp.com)
+[Demo](https://orbinav.herokuapp.com) (Heroku - saattaa avautua hetken...)
 
 ## Ohjelman rakenne ja toiminta
 
