@@ -17,14 +17,12 @@ var lineMat2 = new THREE.LineBasicMaterial({color: 0xbb7766, linewidth: 1, opaci
 
 var renderer = new THREE.WebGLRenderer({antialias: true});
 
-var WIDTH = get_viewport_width();
-var HEIGHT = get_viewport_height();
-var VIEW_ANGLE = 43;
-var ASPECT = WIDTH / HEIGHT;
-var NEAR = 1000000;
-var FAR = 40000000;
+var width = get_viewport_width();
+var height = get_viewport_height();
+var aspect = width / height;
+var view_angle = get_camera_fov(aspect);
 
-var camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
+var camera = new THREE.PerspectiveCamera(view_angle, aspect, 1000000, 40000000);
 camera.position.z = -20000000;
 
 set_viewport_size();
@@ -94,6 +92,7 @@ function set_viewport_size() {
     var width = get_viewport_width();
     var height = get_viewport_height();
     camera.aspect = width / height;
+    camera.fov = get_camera_fov(camera.aspect);
     camera.updateProjectionMatrix();
     renderer.setSize(width, height, true);
 }
@@ -104,6 +103,14 @@ function get_viewport_width() {
 
 function get_viewport_height() {
     return $(window).innerHeight() - $('#infopanel').outerHeight() - $(".navbar-header").outerHeight()-7;
+}
+
+// Make sure the scene is always visible (with default zoom)
+function get_camera_fov(aspect) {
+    var C = 7800000/20000000;
+    var vert_fov = 360*Math.atan(C)/Math.PI;
+    var hor_fov = 360*Math.atan(C/aspect)/Math.PI;
+    return Math.max(vert_fov, hor_fov);
 }
 
 function render() {
