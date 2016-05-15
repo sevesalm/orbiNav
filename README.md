@@ -1,24 +1,15 @@
 # orbiNav
 
+This is my solution to [Reaktor Orbital Challenge](https://reaktor.com/orbital-challenge/). Basically a CSV formatted [data file](https://space-fast-track.herokuapp.com/generate) is given. It contains coordinates and altitudes of satellites orbiting the Earth. There are also starting and end points. One must find an unobstructed way from the start to the end using the satellites. Is this an impossible mission? Not at all! Here is a working solution:
 
-[Reaktor](https://reaktor.com) heitti kuumottavan haasteen [Reaktor Orbital Challenge](https://reaktor.com/orbital-challenge/), jossa annetaan CSV-muotoinen [data](https://space-fast-track.herokuapp.com/generate) maapalloa kiertävistä satelliiteista, sekä lähtö- ja päätepiste maan pinnalla. Näiden perusteella on löydettävä esteetön reitti lähtöpisteestä päätepisteeseen satelliittien kautta. En lannistunut lähes mahdottoman edessä, vaan päätin ratkaista tämänkin ongelman. Lopputuloksena syntyi orbiNav!
+[Demo](https://orbinav.herokuapp.com) (Heroku - might have some initial delay...)
 
-[Demo](https://orbinav.herokuapp.com) (Heroku - saattaa avautua hetken...)
+## Implementation details
 
-## Ohjelman rakenne ja toiminta
+orbiNav is a web application for fetching, solving and presenting the problem and the solution. Server uses Django framework (Python) and client side is written in JavaScript. After the client has made a new AJAX request server side first fetches a new problem from Reaktor server. It then solves the problem using [Dijkstra's Algorithm](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm). It calculates both the route with the shortest total length and the route with least amount of hops  - the solutions sometimes differ. Basic Ray-Sphere intersection calculations are used to determine line-of-sight. The result including visualization data is then passed to the client in JSON.
 
-Ohjelma on Djangolla (Python) toteutettu nettisivu, jossa palvelin hakee datan Reaktorin palvelimelta, ratkaisee ongelman ja palauttaa ratkaisun JSON-muodossa asiakkaalle (client), joka toteuttaa visualisoinnin JavaScriptillä. 
+The client shows the solution both as text and as a 3D model. 3D visualization is done using [Three.js](http://threejs.org). There is a fallback method if the browser doesn't support WebGL. [Bootstrap](http://getbootstrap.com) was used to create responsive layout and webpage styling.
 
-Palvelin ratkaisee ongelman kaksi kertaa: ensin minimoiden matkan, sitten minimoiden hyppäysten lukumäärän - ratkaisut eivät ole aina identtiset. Kumpikin tapahtuu [Dijkstran algoritmilla](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm), jälkimäisessä graafin sivujen painot ovat kaikki 1.0 todellisen etäisyyden sijaan. Esteettömyys varmistetaan ratkaisemalla säteen ja pallon välinen törmäys vektorimagialla. Business logic tapahtuu tiedostossa `main/solver.py` (sekä `main/views.py`).
+The code is commented and quite easy to follow. The solving business logic can be found in `main/solver.py` and the client side implementation in `main/static/render.js`. orbiNav has also been tested with a few Android phones. 
 
-Asiakaspäässä ratkaisu näytetään tekstinä, sekä visualisoidaan käyttäen [Three.js](http://threejs.org)-kirjastoa. Leiskan responsiivisuus on toteutettu [Bootstrapillä](http://getbootstrap.com). Lisäksi mukana on [Bootstrap Notify](http://bootstrap-notify.remabledesigns.com) virheilmoitusten antamiseen. Koodi löytyy tiedostosta `main/static/render.js`.
-
-Kaikki koodi on kommentoitua ja varsin selkeää seurattavaa. Testattu myös parilla Android-puhelimella. Pahimmat (uskallanko sanoa: kaikki...) muistivuodot tukittu. Kaikki palaute on tervetullutta!
-
-## The same in English
-
-This is my humble proposal as a solution to [Reaktor Orbital Challenge](https://reaktor.com/orbital-challenge/). Server uses Django framework (Python) and client side is JavaScript. Basically server side solves the problem using [Dijkstra's Algorithm](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm). It calculates both the route with least amount of hops and the route with the shortest total length - the solutions might differ. Basic Ray-Sphere intersection calculations are used to determine line-of-sight. The result is passed to the client in JSON after the client has made an AJAX request. 
-
-3D visualization is done with [Three.js](http://threejs.org) library. [Bootstrap](http://getbootstrap.com) was used to create responsive layout and webpage styling.
-
-Feel free to ask more and give feedback and ideas to improve the application!
+Feel free to ask more or give feedback and ideas to improve the application!
