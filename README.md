@@ -10,6 +10,6 @@ orbiNav is a web application for fetching, solving and presenting the problem an
 
 The client shows the solution both as text and as a 3D model. 3D visualization is done using [Three.js](http://threejs.org). There is a fallback method if the browser doesn't support WebGL. [Bootstrap](http://getbootstrap.com) was used to create responsive layout and webpage styling.
 
-The code is commented and quite easy to follow. The solving business logic can be found in `main/solver.py` and the client side implementation in `main/static/render.js`. orbiNav has also been tested with a few Android phones. 
+The code is commented and quite easy to follow. The solving business logic can be found in `main/solver.py` and the client side implementation in `main/static/render.js`. orbiNav has also been tested with a few Android and iPhone phones. (No optimizations for older and slower phones. Don't bother with an iPhone 4...)
 
 Feel free to ask more or give feedback and ideas to improve the application!

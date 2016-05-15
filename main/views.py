@@ -9,21 +9,16 @@ def index(request):
 def about(request):
 	return render(request, 'about.html', {})
 
+# View for AJAX requests. Fetches the problem, solves it and returns the result as JSON
 @csrf_exempt
 def generate(request):
-	solver = Solver("data.txt")
-	result_euc = solver.solve(True)
-	result_hops = solver.solve(False)
-	points = []
+	solver = Solver()
 
-	for item in solver.points:
-		coords = [item.x, item.y, item.z]
-		points.append(coords)
+	result = {
+		'seed': 	solver.seed,
+		'euc':		solver.solve(True),
+		'hops':		solver.solve(False),
+		'points':	solver.get_points()
+	}
 
-	result = {}
-	result["seed"] = str(solver.seed)
-	result["euc"] = result_euc
-	result["hops"] = result_hops
-	result["points"] = points
 	return JsonResponse(result)
-

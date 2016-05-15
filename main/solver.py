@@ -7,7 +7,7 @@ import json
 EARTH_RADIUS = 6371000
 EARTH_RADIUS2 = EARTH_RADIUS*EARTH_RADIUS
 
-# All calculations are done in Cartesian
+# All other calculations are done in Cartesian
 def polar_to_cartesian(lat, lon, alt):
 	latitude = math.radians(lat)
 	longitude = math.radians(lon)
@@ -70,10 +70,9 @@ class Node:
 		return self.priority < other.priority
 
 class Solver:
-	# Parses input data: converts polar->cartesian and stores all points
-	def __init__(self, filename):
+	# Parses input data: converts polar->cartesian and stores all points. The calculates node distances
+	def __init__(self):
 		self.points = []
-		#with open(filename, 'r') as f:
 		with urllib.request.urlopen('https://space-fast-track.herokuapp.com/generate') as f:
 			self.seed = f.readline().decode('utf-8').split()[-1]
 			for line in f:
@@ -85,7 +84,7 @@ class Solver:
 					self.points.insert(0, polar_to_cartesian(float(items[1]), float(items[2]), 1))
 					self.points.insert(1, polar_to_cartesian(float(items[3]), float(items[4]), 1))
 				else:
-					print("Error:", identifier)
+					print("Error: ", identifier)
 		self.count = len(self.points)
 		self.calc_dist()
 
@@ -99,6 +98,15 @@ class Solver:
 				if p1.can_see(p2):
 					dist = p1.distance_to(p2)
 					self.dist_matrix[i*self.count + j] = self.dist_matrix[i + j*self.count] = dist
+
+	# Return coordinates for all nodes
+	def get_points(self):
+		points = []
+		for item in self.points:
+			coords = [item.x, item.y, item.z]
+			points.append(coords)
+
+		return points
 
 	# Using Dijkstra algorithm for finding the shortest route
 	# Uses simple priority queue for storing unvisited nodes
