@@ -1,7 +1,6 @@
 import urllib.request
 import math
 import sys
-import json
 
 # Global (no pun intended) constants
 EARTH_RADIUS = 6371000
